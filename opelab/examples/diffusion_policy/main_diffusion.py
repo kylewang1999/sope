@@ -11,6 +11,7 @@ sys.path.append(os.path.join(current_dir, '../../..'))
 
 from opelab.core.baselines.simple import OnPolicy, WeightedIS, ISStepwise, WeightedISStepwise, WeightedISStepwiseV2
 from opelab.core.baselines.fqe import FQE
+# from opelab.core.baselines.fqe_jax import FQE
 from opelab.core.baselines.model_based_rollout import MBR
 from opelab.core.baselines.diffuser import Diffuser
 from opelab.core.policy import D4RLPolicy, DiffusionPolicy
@@ -19,7 +20,7 @@ from opelab.examples.helpers import evaluate_policies, create_baselines
 BASELINE_CLASSES = {
         "Diffuser": Diffuser,
         "MBR": MBR,
-        "FQE": FQE
+        "FQE": FQE,
     }
 
 def main(config_path, device):

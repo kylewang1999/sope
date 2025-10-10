@@ -24,25 +24,15 @@
         "policy/cheetah_diffusion/deep-ope_d4rl_halfcheetah_halfcheetah_online_8.pt",
         "policy/cheetah_diffusion/deep-ope_d4rl_halfcheetah_halfcheetah_online_9.pt"
     ],
-    "baseline_configs": {
 
-        "Diffuser": {
-            "class": "Diffuser",
+    "baseline_configs": {
+        "FQE": {
+            "class": "FQE",
             "params": {
-                "T": 4,
-                "D": 256,
-                "num_samples": 50,
-                "T_gen": 1024,
-                "action_dim": 3,
-                "state_dim": 11,
-                "model_path": "policy/cheetah.pth",
-                "guided": true,
-                "tanh_action": false,
-                "scale": 0,
-                "dim_mults" : [1,4,8],
-                "attention" : true
+              "state_dim": 17,
+              "action_dim": 6
             }
-        }
+          }
     },
     "experiment_params": {
         "horizon": 768,

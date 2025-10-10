@@ -24,22 +24,13 @@
         "policy/hopper_diffusion/dope/10.pt"
     ],
     "baseline_configs": {
-        "Diffuser": {
-            "class": "Diffuser",
+        "FQE": {
+            "class": "FQE",
             "params": {
-                "T": 8,
-                "D": 256,
-                "num_samples": 50,
-                "T_gen": 768,
-                "action_dim": 3,
-                "state_dim": 11,
-                "model_path": "policy/hopper.pth",
-                "guided": true,
-                "tanh_action": false,
-                "scale": 0,
-                "predict_epsilon": true
+              "state_dim": 11,
+              "action_dim": 3
             }
-        }
+          }
     },
     "experiment_params": {
         "horizon": 768,

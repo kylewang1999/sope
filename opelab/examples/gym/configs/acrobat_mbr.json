@@ -32,7 +32,7 @@
                         "epochs": 100,
                         "layers": [200,200,200],
                         "horizon": 768,
-                        "savepath": "models/acrobat/model_based.pkl"
+                        "savepath": "models/acrobat/model_based2.pkl"
             }
         } 
     }

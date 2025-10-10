@@ -1,0 +1,43 @@
+{
+    "env_name": "hopper-medium-v2",
+    "guidance_hyperparams": {
+        "action_scale": 0.5,
+        "use_adaptive": false,
+        "use_neg_grad": true,
+        "neg_grad_scale": 0.1,
+        "normalize_grad": true,
+        "k_guide": 1,
+        "use_action_grad_only": true,
+        "clamp" : true,
+        "l_inf" : 1,
+        "ratio" : 0.5
+    },
+    "target_policy_paths": [
+        "opelab/examples/d4rl/policy/hopper/dope/1.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/2.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/3.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/4.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/5.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/6.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/7.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/8.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/9.pkl",
+        "opelab/examples/d4rl/policy/hopper/dope/10.pkl"
+    ],
+    "baseline_configs": {
+        "FQE":{
+            "class": "FQE",
+            "params":{
+            }
+        }
+    },
+    "experiment_params": {
+        "horizon": 768,
+        "rollouts": 50,
+        "gamma": 0.99,
+        "trials": 5,
+        "save_path": "results/hopper/fqe",
+        "top_k": 2,
+        "oracle_rollouts": 10
+    }
+}

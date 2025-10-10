@@ -9,9 +9,9 @@ import gym
 import d4rl
 import pickle
 import os
-# from cleandiffuser.nn_condition import PearceObsCondition
-# from cleandiffuser.nn_diffusion import PearceMlp
-# from cleandiffuser.diffusion.diffusionsde import DiscreteDiffusionSDE
+from cleandiffuser.nn_condition import PearceObsCondition
+from cleandiffuser.nn_diffusion import PearceMlp
+from cleandiffuser.diffusion.diffusionsde import DiscreteDiffusionSDE
 
 
 from opelab.core.baselines.td3.TD3 import Actor
@@ -644,6 +644,32 @@ class D4RLSACPolicy(Policy):
         raw_action = mean + std * noise
         action = self.output_transformation(raw_action)
         return action.cpu().detach().numpy()
+    
+    def sample_tensor(self, state: np.ndarray or torch.Tensor, deterministic: bool = False) -> torch.Tensor:
+        """
+        Samples an action from the policy at the given state and returns a torch.Tensor.
+
+        Args:
+            state: A NumPy array or torch.Tensor (shape [state_dim]) or a batch of states.
+            deterministic: If True, use the mean (no added noise). If False, sample with noise.
+        Returns:
+            (torch.Tensor): Sampled action(s).
+        """
+        if not isinstance(state, torch.Tensor):
+            state = torch.tensor(state, dtype=torch.float32, device=self.fc0_w.device)
+
+        mean, logstd = self.forward(state)
+        std = torch.exp(logstd)
+
+        if deterministic:
+            noise = torch.zeros_like(mean)
+        else:
+            noise = torch.randn_like(mean)
+
+        raw_action = mean + std * noise
+        action = self.output_transformation(raw_action)
+        return action
+    
 
     def log_prob(self, state: np.ndarray or torch.Tensor, action: np.ndarray or torch.Tensor) -> torch.Tensor:
         """

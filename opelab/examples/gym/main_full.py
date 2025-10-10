@@ -17,6 +17,8 @@ from opelab.core.baselines.diffuser import Diffuser
 from opelab.core.task import ContinuousAcrobotEnv
 from opelab.core.policy import D4RLPolicy, D4RLSACPolicy, TD3Policy
 from opelab.examples.helpers import evaluate_policies, create_baselines
+from opelab.core.baselines.fqe import FQE
+# from opelab.core.baselines.fqe_jax import FQE
 
 BASELINE_CLASSES = {
         "OnPolicy": OnPolicy,
@@ -28,6 +30,7 @@ BASELINE_CLASSES = {
         "WeightedISStepwise2": WeightedISStepwiseV2,
         "BlackBox": BlackBox,
         "MBR": MBR,
+        "FQE": FQE,
     }
 
 def main(config_path, device):
