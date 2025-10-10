@@ -5,7 +5,7 @@ from opelab.core.data import DataType
 from opelab.core.policy import Policy
 import random
 import jax 
-
+import torch
 
 class OnPolicy(Baseline):
 
@@ -22,84 +22,91 @@ class OnPolicy(Baseline):
         
 
 class IS(Baseline):
-    
-    def evaluate(self, data:DataType, target:Policy, behavior:Policy, gamma:float=1.0, reward_estimator=None) -> float:
-        mean_est_reward = 0.0
+    def evaluate(self, data: DataType, target: Policy, behavior: Policy,
+                 gamma: float = 1.0, reward_estimator=None) -> float:
         data = random.choices(data, k=1024)
-        
+        N = len(data)
+
+        max_T = max(len(tau['rewards']) for tau in data)
+        if gamma == 1.0:
+            gamma_pows_full = None  # not needed
+        else:
+            gamma_pows_full = np.power(gamma, np.arange(max_T, dtype=np.float64))
+
+        mean_est_reward = 0.0
+
         for tau in tqdm(data):
-            log_tau_ratio = 0.0
-            total_reward = 0.0
-            discounted_t = 1.0
-            normalizer = 0.0
-            for state, action, reward in zip(tau['states'], tau['actions'], tau['rewards']):
-                target_prob = target.prob(state, action)
-                behaviour_prob = behavior.prob(state, action)
-                log_tau_ratio += np.log(target_prob) - np.log(behaviour_prob)
-                total_reward += reward * discounted_t
-                normalizer += discounted_t
-                discounted_t *= gamma
-            avr_reward = total_reward #/ normalizer
-            mean_est_reward += avr_reward * np.exp(log_tau_ratio)
-        mean_est_reward /= len(data)
+            s, a, r = tau['states'], tau['actions'], tau['rewards']
+
+            try:
+                tp = target.vectorized_prob(s, a)
+                bp = behavior.vectorized_prob(s, a)
+
+                # convert to 1D numpy arrays (supports torch or numpy)
+                tp_np = tp.detach().cpu().numpy().reshape(-1) if hasattr(tp, "detach") else np.asarray(tp).reshape(-1)
+                bp_np = bp.detach().cpu().numpy().reshape(-1) if hasattr(bp, "detach") else np.asarray(bp).reshape(-1)
+            except AttributeError:
+                # if vectorized_prob is unavailable, use original scalar loop 
+                tp_np = np.array([target.prob(si, ai) for si, ai in zip(s, a)], dtype=np.float64)
+                bp_np = np.array([behavior.prob(si, ai) for si, ai in zip(s, a)], dtype=np.float64)
+
+            # sum of log importance ratios over the trajectory
+            log_tau_ratio = np.log(tp_np).sum() - np.log(bp_np).sum()
+
+            # discounted return of this trajectory (same as your loop)
+            r_np = np.asarray(r, dtype=np.float64).reshape(-1)
+            T = r_np.shape[0]
+            if gamma == 1.0:
+                total_reward = r_np.sum()
+            else:
+                total_reward = np.dot(r_np, gamma_pows_full[:T])
+
+            # accumulate IS estimate
+            mean_est_reward += total_reward * np.exp(log_tau_ratio)
+
+        mean_est_reward /= float(N)
         print(mean_est_reward)
-        return mean_est_reward
+        return float(mean_est_reward)
                 
 
 class ISStepwise(Baseline):
-    
-    def evaluate(self, data:DataType, target:Policy, behavior:Policy, gamma:float=1.0, reward_estimator=None) -> float:
-        log_policy_ratios, REW = [], []
-        len_each = None
-        epsilon = 1e-15
+    def evaluate(self, data: DataType, target: Policy, behavior: Policy,
+                 gamma: float = 1.0, reward_estimator=None) -> float:
+        epsilon = 1e-12
 
-        #data = random.choices(data, k=500)
-
-        #rewards = 0
-        #weights = 0
         data = random.choices(data, k=1024)
-        
-        min_den, max_den = np.inf, -1*np.inf 
-        
-        max_traj_length = max([len(tau['states']) for tau in data])
-        
-        log_prob_ratios = np.zeros((len(data), max_traj_length))
-        rewards = np.zeros((len(data), max_traj_length))
-        mask = np.zeros((len(data), max_traj_length))
-        
-        for i in tqdm(range(len(data))):
+        N = len(data)
+        max_traj_length = max(len(tau['states']) for tau in data)
+
+        log_prob_ratios = np.zeros((N, max_traj_length))
+        rewards = np.zeros((N, max_traj_length))
+        mask = np.zeros((N, max_traj_length))
+
+        for i in tqdm(range(N)):
             tau = data[i]
-            s = tau['states']
-            a = tau['actions']
-            r = tau['rewards']
-            traj_length = s.shape[0]
-            
-            target_pr = target.prob(s,a)
-            behaviour_pr = behavior.vectorized_prob(s,a)
-            
-            rewards[i, :traj_length] = r 
-            
-            log_prob_ratio_at_step = np.log(target_pr.detach().cpu()) - np.log(behaviour_pr.detach().cpu())
-            
-            log_prob_ratios[i, :traj_length] = np.clip(log_prob_ratio_at_step, -4., 2.)
-            mask[i, :traj_length] = 1
-            
+            s, a, r = tau['states'], tau['actions'], tau['rewards']
+            T = s.shape[0]
+
+            tp = target.vectorized_prob(s, a).clamp(min=epsilon)
+            bp = behavior.vectorized_prob(s, a).clamp(min=epsilon)
+
+            lpr = (tp.log() - bp.log()).reshape(-1).cpu().numpy()
+
+            r_np = np.asarray(r).reshape(-1)
+
+            rewards[i, :T] = r_np[:T]
+            log_prob_ratios[i, :T] = np.clip(lpr, -4.0, 2.0)
+            mask[i, :T] = 1.0
+
+        # cumulative log-weights and unnormalized weights
         cumulative_lpr = np.cumsum(log_prob_ratios, axis=1)
-        lpr_offset = cumulative_lpr.max(axis=0)
-        cum_probs = np.exp(cumulative_lpr)
-        
-        discount_weights = mask* gamma ** np.arange(max_traj_length)[None,:]
-        
-        
-        
-        weighted_reward_sum_at_step = np.sum(rewards * discount_weights * cum_probs * mask, axis=0)
-        sum_of_weights = np.sum(cum_probs*mask, axis=0) + 1e-10
-        
-        avg_step = weighted_reward_sum_at_step
-        
-        estimated_return  = np.mean(avg_step)
-        print(estimated_return)
-        #estimator is numerator / denominator
+        cum_probs = np.exp(cumulative_lpr)  
+
+        discount = (gamma ** np.arange(max_traj_length))[None, :]
+
+        weighted_per_step_sum = np.sum(rewards * discount * cum_probs * mask, axis=0)
+        avg_step = weighted_per_step_sum / N
+        estimated_return = float(np.sum(avg_step))
         return estimated_return
 
 
@@ -280,57 +287,61 @@ class WeightedISStepwise(Baseline):
         return numerator / denominator 
         
 class WeightedISStepwiseV2(Baseline):
-    
-    def evaluate(self, data:DataType, target:Policy, behavior:Policy, gamma:float=1.0, reward_estimator=None) -> float:
+    def evaluate(self, data: DataType, target: Policy, behavior: Policy,
+                 gamma: float = 1.0, reward_estimator=None) -> float:
         log_policy_ratios, REW = [], []
         len_each = None
         epsilon = 1e-15
 
         data = random.choices(data, k=1024)
 
-        #rewards = 0
-        #weights = 0
-        
-        
-        min_den, max_den = np.inf, -1*np.inf 
-        max_traj_length = max([len(tau['states']) for tau in data])
+        min_den, max_den = np.inf, -1 * np.inf
+        max_traj_length = max(len(tau['states']) for tau in data)
 
-        log_prob_ratios = np.zeros((len(data), max_traj_length)) 
-        rewards = np.zeros((len(data), max_traj_length))
-        mask = np.zeros((len(data), max_traj_length))
+        N = len(data)
+        log_prob_ratios = np.zeros((N, max_traj_length))
+        rewards = np.zeros((N, max_traj_length))
+        mask = np.zeros((N, max_traj_length))
 
         # Compute log prob ratios per trajectory
-        for i in tqdm(range(len(data))):
+        for i in tqdm(range(N)):
             tau = data[i]
             s = tau['states']
-            a = tau['actions'] 
+            a = tau['actions']
             r = tau['rewards']
             traj_length = s.shape[0]
-        
-            target_pr = target.prob(s,a)
-            behaviour_pr = behavior.vectorized_prob(s,a)
-            
-            rewards[i, :traj_length] = r
-            log_prob_ratio_at_step = np.log(target_pr.detach().cpu()) - np.log(behaviour_pr.detach().cpu())
-            log_prob_ratios[i, :traj_length] = np.clip(log_prob_ratio_at_step, -6., 2.)
-            mask[i, :traj_length] = 1
+
+            target_pr_t = torch.clamp(target.vectorized_prob(s, a), min=epsilon)
+            behavior_pr_t = torch.clamp(behavior.vectorized_prob(s, a), min=epsilon)
+
+            log_prob_ratio_at_step = (torch.log(target_pr_t) - torch.log(behavior_pr_t)).reshape(-1).cpu().numpy()
+
+            r_np = np.asarray(r).reshape(-1)
+
+            rewards[i, :traj_length] = r_np[:traj_length]
+            log_prob_ratios[i, :traj_length] = np.clip(log_prob_ratio_at_step[:traj_length], -6.0, 2.0)
+            mask[i, :traj_length] = 1.0
 
         # Compute cumulative ratios
-        cumulative_lpr = np.cumsum(log_prob_ratios, axis=1) 
-        lpr_offset = cumulative_lpr.max(axis=0)
-        cum_probs = np.exp(cumulative_lpr - lpr_offset[None,:])
+        cumulative_lpr = np.cumsum(log_prob_ratios, axis=1)
 
-        # Normalize weights per timestep
-        avg_cum_probs = np.sum(cum_probs * mask, axis=0) / (1e-10 + np.sum(mask, axis=0))
-        norm_cum_probs = cum_probs / (1e-10 + avg_cum_probs[None,:])
+        logw = np.where(mask == 1.0, cumulative_lpr, -np.inf)  # exclude padded positions in log-space
 
-        # Apply discounted rewards
-        discount_weights = mask * gamma ** np.arange(max_traj_length)[None,:]
-        weighted_rewards = discount_weights * rewards * norm_cum_probs
+        # per-timestep stability shift using only valid entries
+        lpr_offset = np.max(logw, axis=0)
+        lpr_offset[~np.isfinite(lpr_offset)] = 0.0  # if a whole column is invalid (shouldn't happen)
 
-        # Average over trajectories and sum over time
-        estimated_return = np.sum(np.mean(weighted_rewards, axis=0))
-        print(estimated_return)
+        # exponentiate only masked, shifted entries
+        cum_probs = np.exp(logw - lpr_offset[None, :])
+
+        den = np.sum(cum_probs * mask, axis=0) + 1e-10  # sum of weights per t
+        norm_w = (cum_probs * mask) / den[None, :]      # per-t normalized weights
+
+        discount = (gamma ** np.arange(max_traj_length))[None, :]
+
+        # per-timestep SNIS expectation; sum over i (not mean), then sum over t
+        snis_per_t = np.sum(discount * rewards * norm_w, axis=0)
+        estimated_return = float(np.sum(snis_per_t))
         return estimated_return
     """
         max_traj_length = max([len(tau['states']) for tau in data])

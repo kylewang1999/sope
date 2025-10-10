@@ -10,7 +10,9 @@ import sys
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(current_dir, '../../..'))
 
-from opelab.core.baselines.simple import OnPolicy
+from opelab.core.baselines.simple import OnPolicy, WeightedIS, ISStepwise, WeightedISStepwise, IS, WeightedISStepwiseV2
+from opelab.core.baselines.blackbox import BlackBox
+from opelab.core.baselines.model_based_rollout import MBR
 from opelab.core.baselines.diffuser import Diffuser
 from opelab.core.task import ContinuousAcrobotEnv
 from opelab.core.policy import D4RLPolicy, D4RLSACPolicy, TD3Policy
@@ -19,6 +21,13 @@ from opelab.examples.helpers import evaluate_policies, create_baselines
 BASELINE_CLASSES = {
         "OnPolicy": OnPolicy,
         "Diffuser": Diffuser,
+        "WeightedIS": WeightedIS,
+        "ISStepwise": ISStepwise,
+        "IS": IS,
+        "WeightedISStepwise": WeightedISStepwise,
+        "WeightedISStepwise2": WeightedISStepwiseV2,
+        "BlackBox": BlackBox,
+        "MBR": MBR,
     }
 
 def main(config_path, device):

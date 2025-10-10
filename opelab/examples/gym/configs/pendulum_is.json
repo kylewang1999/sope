@@ -3,16 +3,16 @@
     "behavior_policy_path": "opelab/examples/gym/policy/pendulum/Pi_3.pkl",
     "dataset_path":"opelab/examples/gym/dataset/pdataset/",
     "guidance_hyperparams": {
-        "action_scale": 0.1,
+        "action_scale": 1.0,
         "state_scale": 0.0,
         "use_adaptive": false,
-        "use_neg_grad": false,
+        "use_neg_grad": true,
         "neg_grad_scale": 0.1,
         "normalize_grad": true,
         "k_guide": 1,
         "use_action_grad_only": true,
         "clamp" : false,
-        "l_inf" : 1,
+        "l_inf" : 10,
         "ratio" : 1.0
     },
     "target_policy_paths": [
@@ -21,36 +21,23 @@
         "opelab/examples/gym/policy/pendulum/Pi_3.pkl",
         "opelab/examples/gym/policy/pendulum/Pi_4.pkl",
         "opelab/examples/gym/policy/pendulum/Pi_5.pkl"
-    ],
+        ],
     "baseline_configs": {
-        "Naive": {
-            "class": "OnPolicy",
+        "WISSTep2": {
+            "class": "WeightedISStepwise2",
             "params": {}
         },
-        "Diffuser": {
-            "class": "Diffuser",
-            "params": {
-                "T": 16,
-                "D": 256,
-                "num_samples": 100,
-                "T_gen": 200,
-                "action_dim": 1,
-                "state_dim": 3,
-                "model_path": "opelab/examples/gym/models/pendulum.pth",
-                "guided": true,
-                "tanh_action": false,
-                "scale": 0,
-                "predict_epsilon": true,
-                "dim_mults": [1, 2, 4, 8]
-            }
+        "ISStepwise": {
+            "class": "ISStepwise",
+            "params": {}
         }
     },
     "experiment_params": {
-        "horizon": 200,
+        "horizon": 196,
         "rollouts": 50,
         "gamma": 0.99,
         "trials": 5,
-        "save_path": "results/pendulum/abl/2",
+        "save_path": "results/pendulum/IS",
         "top_k": 2,
         "oracle_rollouts": 100
     }

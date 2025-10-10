@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 LC_ALL=C.UTF-8 \
@@ -31,7 +31,7 @@ ENV MUJOCO_GL=egl
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install "cython<3" wheel setuptools six && \
     python3 -m pip install mujoco-py==2.1.2.14 "gym==0.23.1" && \
-    python3 -m pip install "torch>=1.12,<3.0" jax jaxlib flax optax && \
+    python3 -m pip install "torch>=1.12,<3.0" "jax[cuda12]" jaxlib flax optax && \
     python3 -m pip install "git+https://github.com/Farama-Foundation/d4rl@master#egg=d4rl" || true && \
     python3 -m pip install pygame einops && \
     python3 - <<'PY'

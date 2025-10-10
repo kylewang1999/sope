@@ -143,7 +143,7 @@ Normalization = Enum('Normalization', ['NORM', 'STD', 'NONE'])
 
 
 def to_numpy(data: DataType, target: Policy, behavior: Policy, 
-             normalization: Normalization=Normalization.STD, 
+             normalization: Normalization=Normalization.NONE, 
              clip_ratio_min: float=0.0, clip_ratio_max: float=np.inf, return_terminals=False) -> Tuple:
     states, actions, next_states, rewards, target_prob, behavior_prob, terminals = [], [], [], [], [], [], []
     n = 0

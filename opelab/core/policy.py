@@ -793,6 +793,21 @@ class D4RLSACPolicy(Policy):
         self.fclast_b_logstd = self.fclast_b_logstd.to(device)
         return self
     
+    def vectorized_prob(self, state: np.ndarray or torch.Tensor, action: np.ndarray or torch.Tensor) -> float:
+        """
+        Probability of taking `action` in state `state`. 
+        Typically returns a floating scalar if state/action is single, 
+        or a vector if batched.
+        """
+        if not isinstance(state, torch.Tensor):
+            state = torch.tensor(state, dtype=torch.float32, device=self.fc0_w.device)
+        if not isinstance(action, torch.Tensor):
+            action = torch.tensor(action, dtype=torch.float32, device=self.fc0_w.device)
+            
+        # exponentiate the log_prob
+        log_p = self.log_prob(state, action)
+        return torch.exp(log_p)
+    
 class DiffusionPolicy(Policy):
 
     def __init__(self, obs_dim: int, act_dim: int, policy_path: str = None, device=None):
