@@ -39,7 +39,7 @@
         "rollouts": 50,
         "gamma": 0.99,
         "trials": 5,
-        "save_path": "results/cheetah",
+        "save_path": "results/cheetah/fqe",
         "top_k": 2,
         "oracle_rollouts": 50
     }

@@ -37,7 +37,7 @@
         "rollouts": 50,
         "gamma": 0.99,
         "trials": 5,
-        "save_path": "results/z25",
+        "save_path": "results/hopper/fqe",
         "top_k": 2,
         "oracle_rollouts": 1
     }

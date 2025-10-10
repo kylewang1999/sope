@@ -28,6 +28,8 @@
         "FQE":{
             "class": "FQE",
             "params":{
+                "state_dim": 11,
+                "action_dim": 3
             }
         }
     },
