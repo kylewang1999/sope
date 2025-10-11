@@ -28,11 +28,12 @@
         "FQE":{
                 "class": "FQE_JAX",
                 "params":{
-                    "lr": 0.003,
-                    "tau": 0.005,
+                    "lr": 0.001,
+                    "tau": 0.05,
                     "layers": [256, 256],
-                    "epochs": 100,
-                    "batch_size": 256
+                    "epochs": 200,
+                    "batch_size": 512,
+                    "output_activation": "tanh"
                 }
             }
     },
@@ -43,6 +44,6 @@
         "trials": 5,
         "save_path": "results/acrobat/fqe",
         "top_k": 2,
-        "oracle_rollouts": 10
+        "oracle_rollouts": 30
     }
 }

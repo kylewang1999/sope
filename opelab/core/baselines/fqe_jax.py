@@ -17,7 +17,7 @@ from opelab.core.policy import Policy
 
 class FQE(Baseline):
     
-    def __init__(self, lr:float = 3e-3, tau=0.0005, layers: Sequence[int] = [500, 500], epochs:int=100, batch_size: int=256, verbose: int = 0, seed: int = 0):
+    def __init__(self, lr:float = 3e-3, tau=0.0005, layers: Sequence[int] = [500, 500], epochs:int=100, batch_size: int=256, verbose: int = 0, seed: int = 0, output_activation='relu'):
         
         self.lr = lr 
         self.epochs = epochs 
@@ -26,7 +26,7 @@ class FQE(Baseline):
         self.seed = seed
         self.tau = tau
         self.optimizer = optax.chain(optax.clip_by_global_norm(1.0), optax.adamw(lr))
-        self.model = MLP(layers+[1,], nn.relu, output_activation=lambda s: s)
+        self.model = MLP(layers+[1,], nn.relu if output_activation == 'relu' else nn.tanh, output_activation=lambda s: s)
         self.processed_data=False
         
         def predict_w_fn(params, states, actions):

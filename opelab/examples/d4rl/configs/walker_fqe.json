@@ -28,10 +28,10 @@
         "FQE":{
             "class": "FQE_JAX",
             "params":{
-                "lr": 0.003,
-                "tau": 0.05,
+                "lr": 0.0003,
+                "tau": 0.001,
                 "layers": [500, 500],
-                "epochs": 50,
+                "epochs": 200,
                 "batch_size": 256
             }
         }
