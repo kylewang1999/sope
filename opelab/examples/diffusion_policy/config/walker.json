@@ -13,16 +13,16 @@
         "ratio" : 0.5
     },
     "target_policy_paths": [
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_0.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_1.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_2.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_3.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_4.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_5.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_6.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_7.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_8.pt",
-        "policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_9.pt"
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_0.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_1.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_2.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_3.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_4.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_5.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_6.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_7.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_8.pt",
+        "opelab/examples/diffusion_policy/policy/walker_diffusion/deep-ope_d4rl_walker_walker_online_9.pt"
     ],
     "baseline_configs": {
         "Diffuser": {

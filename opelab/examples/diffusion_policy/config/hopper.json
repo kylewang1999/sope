@@ -13,15 +13,15 @@
         "ratio" : 0.25
     },
     "target_policy_paths": [
-        "policy/hopper_diffusion/dope/1.pt",
-        "policy/hopper_diffusion/dope/2.pt",
-        "policy/hopper_diffusion/dope/3.pt",
-        "policy/hopper_diffusion/dope/4.pt",
-        "policy/hopper_diffusion/dope/5.pt",
-        "policy/hopper_diffusion/dope/6.pt",
-        "policy/hopper_diffusion/dope/7.pt",
-        "policy/hopper_diffusion/dope/8.pt",
-        "policy/hopper_diffusion/dope/10.pt"
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/1.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/2.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/3.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/4.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/5.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/6.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/7.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/8.pt",
+        "opelab/examples/diffusion_policy/policy/hopper_diffusion/dope/10.pt"
     ],
     "baseline_configs": {
         "Diffuser": {
