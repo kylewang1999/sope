@@ -29,7 +29,14 @@
             "class": "FQE",
             "params":{
                 "state_dim": 11,
-                "action_dim": 3
+                "action_dim": 3,
+                "batch_size": 2048,
+                "lr": 0.0003,
+                "tau": 0.001,
+                "target_update_freq": 5,
+                "epochs": 300,
+                "gamma":0.99
+
             }
         }
     },

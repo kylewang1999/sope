@@ -221,6 +221,17 @@ class TD3Policy(Policy):
         if not deterministic:
             action += torch.normal(mean=0, std=self.std, size=action.size()).to(self.device)
         return action.view(-1).cpu().detach().numpy()
+    
+    def sample_tensor(self, state: Any, deterministic: bool = False) -> torch.Tensor:
+        if not isinstance(state, torch.Tensor):
+            state = torch.tensor(state, dtype=torch.float32).to(self.device).squeeze()
+        if state.ndim == 1:
+            state = state.unsqueeze(0)
+            
+        action = self.forward(state)
+        if not deterministic:
+            action += torch.normal(mean=0, std=self.std, size=action.size()).to(self.device)
+        return action.view(-1)
 
     def prob(self, state: Any, action: Any) -> float:
         if not isinstance(state, torch.Tensor):

@@ -26,10 +26,13 @@
     ],
     "baseline_configs": {
         "FQE":{
-            "class": "FQE",
+            "class": "FQE_JAX",
             "params":{
-                "state_dim": 17,
-                "action_dim": 6
+                "lr": 0.003,
+                "tau": 0.05,
+                "layers": [500, 500],
+                "epochs": 50,
+                "batch_size": 256
             }
         }
     },

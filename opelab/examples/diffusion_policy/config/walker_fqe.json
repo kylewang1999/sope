@@ -31,7 +31,11 @@
             "class": "FQE",
             "params": {
               "state_dim": 17,
-              "action_dim": 6
+              "action_dim": 6,
+              "tau": 0.001,
+              "gamma":0.99,
+              "batch_size":2048,
+              "epochs":300
             }
           }
     },

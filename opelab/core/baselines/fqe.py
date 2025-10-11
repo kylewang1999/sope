@@ -6,6 +6,8 @@ from tqdm import tqdm
 from opelab.core.baseline import Baseline
 from opelab.core.data import to_numpy, Normalization
 
+# Optional: For mixed precision optimization (uncomment to enable)
+# from torch.cuda.amp import autocast, GradScaler
 
 class QNetwork(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_sizes=(256, 256)):
@@ -30,13 +32,16 @@ class QNetwork(nn.Module):
         if isinstance(action, np.ndarray):
             action = torch.from_numpy(action).float().to(state.device)
 
+        if action.dim() == 1:
+            action = action.unsqueeze(-1)
+            
         x = torch.cat([state, action], dim=-1)
         return self.net(x)
 
 
 class FQE(Baseline):
-    def __init__(self, state_dim, action_dim, device='cuda', gamma=0.999, epochs=300,
-                 batch_size=2048, lr=3e-4, tau=0.001, target_update_freq=5,
+    def __init__(self, state_dim, action_dim, device='cuda', gamma=0.99, epochs=1000,
+                 batch_size=2048, lr=3e-4, tau=0.0005, target_update_freq=50,
                  preprocess_once=True):
         self.state_dim = state_dim
         self.action_dim = action_dim
@@ -224,6 +229,7 @@ class FQE(Baseline):
             
             pbar.set_postfix({"loss": f"{epoch_loss / dataset_size:.6f}"})
         
+        # --- Final Value Estimation ---
         self.q_net1.eval()
         self.q_net2.eval()
         

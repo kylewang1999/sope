@@ -24,13 +24,20 @@
         "policy/hopper_diffusion/dope/10.pt"
     ],
     "baseline_configs": {
-        "FQE": {
+        "FQE":{
             "class": "FQE",
-            "params": {
-              "state_dim": 11,
-              "action_dim": 3
+            "params":{
+                "state_dim": 11,
+                "action_dim": 3,
+                "batch_size": 2048,
+                "lr": 0.0003,
+                "tau": 0.001,
+                "target_update_freq": 5,
+                "epochs": 300,
+                "gamma":0.99
+
             }
-          }
+        }
     },
     "experiment_params": {
         "horizon": 768,
@@ -39,6 +46,6 @@
         "trials": 5,
         "save_path": "results/hopper/fqe",
         "top_k": 2,
-        "oracle_rollouts": 1
+        "oracle_rollouts": 50
     }
 }

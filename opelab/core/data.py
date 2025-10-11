@@ -153,8 +153,8 @@ def to_numpy(data: DataType, target: Policy, behavior: Policy,
         next_states.append(tau['next-states'])
         rewards.append(tau['rewards'])
         n += len(tau['rewards'])
-        target_prob.extend([target.prob(s, a) for s, a in zip(tau['states'], tau['actions'])])
-        behavior_prob.extend([behavior.prob(s, a) for s, a in zip(tau['states'], tau['actions'])])
+        # target_prob.extend([target.prob(s, a) for s, a in zip(tau['states'], tau['actions'])])
+        # behavior_prob.extend([behavior.prob(s, a) for s, a in zip(tau['states'], tau['actions'])])
     
         trmnl = [0 for i in range(len(tau['states']))]
         trmnl[-1] = 1 
@@ -176,12 +176,11 @@ def to_numpy(data: DataType, target: Policy, behavior: Policy,
         states = (states - s_min) / (s_max - s_min)
         next_states = (next_states - s_min) / (s_max - s_min)
     rewards = np.concatenate(rewards, axis=0).reshape((n, 1))
-    target_prob = np.asarray(target_prob).reshape((n, 1))
-    behavior_prob = np.asarray(behavior_prob).reshape((n, 1))
-    if target_prob.any() == None or behavior_prob.any() == None:
-        policy_ratio = None
-    else:
-        policy_ratio = np.clip(target_prob / behavior_prob, clip_ratio_min, clip_ratio_max)
+    # target_prob = np.asarray(target_prob).reshape((n, 1))
+    # behavior_prob = np.asarray(behavior_prob).reshape((n, 1))
+    target_prob = None
+    behavior_prob = None
+    policy_ratio = None
     if return_terminals:
             return states, states_un, actions, next_states, next_states_un, rewards, policy_ratio, terminals
     return states, states_un, actions, next_states, next_states_un, rewards, policy_ratio

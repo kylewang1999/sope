@@ -26,13 +26,17 @@
     ],
 
     "baseline_configs": {
-        "FQE": {
-            "class": "FQE",
-            "params": {
-              "state_dim": 17,
-              "action_dim": 6
+        "FQE":{
+            "class": "FQE_JAX",
+            "params":{
+                "lr": 0.00003,
+                "tau": 0.001,
+                "layers": [500, 500],
+                "epochs": 100,
+                "batch_size": 256
             }
-          }
+        }
+    
     },
     "experiment_params": {
         "horizon": 768,

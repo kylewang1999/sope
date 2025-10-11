@@ -15,7 +15,7 @@ from opelab.core.policy import D4RLPolicy, D4RLSACPolicy
 from opelab.examples.helpers import evaluate_policies, create_baselines
 from opelab.core.baselines.model_based_rollout import MBR
 from opelab.core.baselines.fqe import FQE
-# from opelab.core.baselines.fqe_jax import FQE
+from opelab.core.baselines.fqe_jax import FQE as FQE_JAX
 
 
 
@@ -29,6 +29,7 @@ BASELINE_CLASSES = {
         "WeightedISStepwise2": WeightedISStepwiseV2,
         "MBR": MBR,
         "FQE": FQE,
+        "FQE_JAX": FQE_JAX,
     }
 
 def main(config_path, device):
