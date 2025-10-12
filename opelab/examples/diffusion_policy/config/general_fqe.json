@@ -1,0 +1,11 @@
+{
+    "class": "FQE_JAX",
+    "params": {
+        "lr": 0.001,
+        "tau": 0.05,
+        "layers": [500, 500],
+        "epochs": 100,
+        "batch_size": 512,
+        "output_activation": "tanh"
+    }
+}
