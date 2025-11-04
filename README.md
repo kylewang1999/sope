@@ -218,9 +218,10 @@ Our codebase builds upon several open-source projects. We would like to acknowle
 If you find this code useful in your research, please consider citing the following paper:
 
 ```@InProceedings{stitch_ope,
-  title={STITCH-OPE: Trajectory Stitching with Guided Diffusion for Off-Policy Evaluation},
-  author={Hossein Goli and Michael Gimelfarb and Nathan Samuel de Lara and Haruki Nishimura and Masha Itkina and Florian Shkurti},
-  year={2025},
-  booktitle={Neural Information Processing Systems (NeurIPS)}} 
+    title={{STITCH}-{OPE}: Trajectory Stitching with Guided Diffusion for Off-Policy Evaluation},
+    author={Hossein Goli and Michael Gimelfarb and Nathan Samuel de Lara and Haruki Nishimura and Masha Itkina and Florian Shkurti},
+    booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
+    year={2025},
+    url={https://openreview.net/forum?id=AghtKxDf7f}}
 ```
 
