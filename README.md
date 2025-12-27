@@ -221,9 +221,8 @@ If you find this code useful in your research, please consider citing the follow
 @InProceedings{stitch_ope,
 title={{STITCH}-{OPE}: Trajectory Stitching with Guided Diffusion for Off-Policy Evaluation},
 author={Hossein Goli and Michael Gimelfarb and Nathan Samuel de Lara and Haruki Nishimura and Masha Itkina and Florian Shkurti},
-booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
-year={2025},
-url={https://openreview.net/forum?id=AghtKxDf7f}}
+booktitle={Advances in Neural Information Processing Systems},
+year={2025}}
 
 ```
 
