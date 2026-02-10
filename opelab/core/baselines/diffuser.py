@@ -10,7 +10,6 @@ from opelab.core.baselines.diffusion.temporal import TemporalUnet
 from opelab.core.task import ContinuousAcrobotEnv
 from opelab.examples.helpers import TanhBijector
 import gym
-import d4rl
 import os
 
 

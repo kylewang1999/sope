@@ -1,6 +1,5 @@
 import argparse
 import gym
-import d4rl
 import torch
 import numpy as np
 from torch.utils.data import DataLoader, Dataset

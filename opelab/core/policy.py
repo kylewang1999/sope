@@ -6,7 +6,6 @@ from torch.distributions import MultivariateNormal, Normal
 import torch.nn as nn
 import torch.nn.functional as F
 import gym
-import d4rl
 import pickle
 import os
 from cleandiffuser.nn_condition import PearceObsCondition
