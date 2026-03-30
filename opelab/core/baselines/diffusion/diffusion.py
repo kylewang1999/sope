@@ -19,7 +19,10 @@ from opelab.core.baselines.diffusion.helpers import (
     Losses,
 )
 
-from opelab.core.policy import DiffusionPolicy
+try:
+    from opelab.core.policy import DiffusionPolicy
+except ModuleNotFoundError:
+    DiffusionPolicy = None
 
 torch.autograd.set_detect_anomaly(True)
 
@@ -438,7 +441,15 @@ class GaussianDiffusion(nn.Module):
         else:
             return Sample(x, None , chain)
     #@torch.no_grad()
-    def conditional_sample(self, shape, cond, verbose=True, return_chain=False, action_scale=0.2, state_scale=0.01, guided=False, use_adaptive=True, use_neg_grad=True, neg_grad_scale=0.1, normalize_grad=True, k_guide=2, use_action_grad_only=True,return_info=False, clamp=False, l_inf=1, ratio=1, **sample_kwargs):
+    def conditional_sample(
+        self, shape, cond, 
+        verbose=True, 
+        return_chain=False, 
+        action_scale=0.2, 
+        state_scale=0.01, 
+        guided=False, 
+        use_adaptive=True, 
+        use_neg_grad=True, neg_grad_scale=0.1, normalize_grad=True, k_guide=2, use_action_grad_only=True,return_info=False, clamp=False, l_inf=1, ratio=1, **sample_kwargs):
         '''
             conditions : [ (time, state), ... ]
         '''
@@ -461,7 +472,15 @@ class GaussianDiffusion(nn.Module):
         horizon = shape[1]
         shape = (batch_size, horizon, self.transition_dim)
 
-        return self.p_sample_loop(shape, cond, guided=guided, guidance_hyperparams=guidance_hyperparams, return_info=return_info, **sample_kwargs)
+        return self.p_sample_loop(
+            shape,
+            cond,
+            verbose=verbose,
+            guided=guided,
+            guidance_hyperparams=guidance_hyperparams,
+            return_info=return_info,
+            **sample_kwargs,
+        )
 
     #------------------------------------------ training ------------------------------------------#
 
