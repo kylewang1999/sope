@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.codex*
 
 # pydev stuff
 .pydevproject
@@ -179,3 +180,4 @@ cython_debug/
 *.pkl
 
 results/
+dataset/

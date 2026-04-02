@@ -1,24 +1,24 @@
 # STITCH-OPE
 
-<p align="center">
-    <a href= "https://arxiv.org/abs/2505.20781">
-        <img src="https://img.shields.io/badge/arXiv-2505.20781-b31b1b" /></a>
-</p>
 
-<p align="center">
-    <img src="media/trailer.gif" alt="animated" width="75%"/>
-</p>
+
+
 
 This repository contains the code for the paper [STITCH-OPE: Trajectory Stitching with Guided Diffusion for Off-Policy Evaluation](https://stitch-ope.github.io/).
 
 ## Setting up the environment
+
 There are two ways to set up the environment, using our dockerfile with the provided Makefile (This path is much easier), or setting up a conda environment.
+
 ### 1- Docker (Recommended)
+
 ```
 sudo make build      # build the GPU image
 sudo make sanity     # quick check: imports mujoco_py/gym/d4rl + steps Hopper to ensure mujoco works
 ```
+
 to automatically download the assets (policies, diffusion models, datasets, etc) run: 
+
 ```
 # Pick ONE of these; assets are saved into your repo on the host:
 # since the docker mounts your repo at /workspace, you can also download it and put inside the host (In case google Drive link is not accessible)
@@ -26,19 +26,26 @@ sudo make download ZIP_LOCAL=assets.zip
 sudo make download ZIP_URL="https://drive.google.com/file/d/<FILE_ID>/view?usp=sharing"
 
 ```
+
 After these you have full access to the running code and a shell:
+
 ```
 sudo make shell
 ```
+
 Please read the other sections regarding how to run the experiments and train models, you are good to go!
 
 ### 2- Setup a conda environment on python 3.9 (Not recommended)
+
 ```bash
 conda create -n ope python=3.9
 conda activate ope
 ```
+
 ### Installing D4RL
+
 You need to install D4RL in order to run the experiments. You can do this by running the following command:
+
 ```bash
 pip install git+https://github.com/Farama-Foundation/d4rl@master#egg=d4rl
 ```
@@ -54,19 +61,21 @@ conda env update -n ope -f env.yml
 
 If you want to also run the diffusion policy experiments, you need to install clean diffuser library. Instructions can be found [here](https://cleandiffuserteam.github.io/CleanDiffuserDocs/docs/introduction/installation/installation.html).
 
-
 ## Working with OPE-Lab
 
 This framework supports running off-policy evaluation (OPE) experiments on two types of environments:
+
 1. D4RL benchmark environments (with pre-collected datasets)
 2. Standard Gym environments (with custom dataset generation)
 
 ### Dataset Management
 
 #### D4RL Environments
+
 For D4RL environments, the datasets are already included in the D4RL package, so no additional dataset generation is required.
 
 #### Gym Environments
+
 For Gym environments, you need to generate datasets using the provided script:
 
 ```bash
@@ -74,6 +83,7 @@ python opelab/examples/gym/generate_dataset.py --name dataset_name
 ```
 
 This script:
+
 - Collects trajectories using a specified policy
 - Stores observations, actions, rewards, and terminal states
 - Computes and saves normalization statistics for the dataset
@@ -84,11 +94,13 @@ This script:
 For both environment types, you can train diffusion models:
 
 #### For D4RL Environments:
+
 ```bash
 python opelab/examples/d4rl/diffusion_trainer.py --dataset hopper-medium-v2 --T 16 --D 256 --epochs 100 --output_dir ./trained_models
 ```
 
 #### For Gym Environments:
+
 ```bash
 python opelab/examples/gym/diffusion_trainer.py --env Pendulum-v1 --T 2 --D 128 --epochs 100 --train_steps 100 --batch_size 64 --output_dir ./trained_models
 ```
@@ -98,6 +110,7 @@ python opelab/examples/gym/diffusion_trainer.py --env Pendulum-v1 --T 2 --D 128 
 Create JSON configuration files to define the experiment setup. Separate configurations are needed for D4RL and Gym environments.
 
 #### D4RL Configuration Example:
+
 ```json
 {
     "env_name": "hopper-medium-v2",
@@ -138,6 +151,7 @@ Create JSON configuration files to define the experiment setup. Separate configu
 ```
 
 #### Gym Configuration Example:
+
 ```json
 {
     "env_name": "Pendulum-v1",
@@ -182,11 +196,13 @@ Create JSON configuration files to define the experiment setup. Separate configu
 The main entry point for running OPE experiments is `main_full.py`, which is available for both D4RL and Gym environments.
 
 #### For D4RL Environments:
+
 ```bash
 python opelab/examples/d4rl/main_full.py --config opelab/examples/d4rl/configs/hopper.json
 ```
 
 #### For Gym Environments:
+
 ```bash
 python opelab/examples/gym/main_full.py --config opelab/examples/gym/configs/pendulum.json
 ```
@@ -203,15 +219,12 @@ python opelab/examples/gym/main_full.py --config opelab/examples/gym/configs/pen
 
  Full model checkpoint and policies is hosted at this  link: [Google Drive](https://drive.google.com/drive/folders/1v3Vi6yaGHXq63MmYrbfU13MCLli2OFfp?usp=sharing).
 
-
-
 ### Acknowledgements
 
 Our codebase builds upon several open-source projects. We would like to acknowledge the following repositories:
 
 - [Diffuser](https://github.com/jannerm/diffuser)
 - [DDPM-Pytorch](https://github.com/lucidrains/denoising-diffusion-pytorch)
-
 
 ### Reference
 

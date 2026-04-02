@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Download/ingest assets into the repo (works with a local zip, Drive file ID/URL, or Drive folder).
-# Usage examples (host):
-#   sudo make download ZIP_LOCAL=assets.zip
-#   sudo make download ZIP_ID=1AbCdEfGhIj...
-#   sudo make download ZIP_URL="https://drive.google.com/file/d/<id>/view?usp=sharing"
-#   sudo make refresh ZIP_LOCAL=assets.zip
+# Usage examples:
+#   bash scripts/download_assets.sh
+#   ZIP_LOCAL=assets.zip bash scripts/download_assets.sh
+#   ZIP_ID=1AbCdEfGhIj... bash scripts/download_assets.sh
+#   ZIP_URL="https://drive.google.com/file/d/<id>/view?usp=sharing" bash scripts/download_assets.sh
 set -euo pipefail
 
 # ---------- Inputs from environment ----------
 ZIP_LOCAL="${ZIP_LOCAL:-}"   # path to a local .zip inside /workspace (preferred & private)
 ZIP_ID="${ZIP_ID:-}"         # Google Drive file ID (public if share is "Anyone with link")
-ZIP_URL="${ZIP_URL:-}"       # Google Drive file URL (public)
+ZIP_URL="${ZIP_URL:-https://drive.google.com/file/d/13uoTd6Yw5BIM7UUxrLGErMrIta7bl27K/view?usp=sharing}"  # Google Drive file URL (public)
 GDRIVE="${GDRIVE:-}"         # Google Drive folder URL (fallback)
 STAMP="${STAMP:-.cache/download.stamp}"
 REFRESH="${REFRESH:-}"
@@ -135,7 +135,7 @@ fi
 
 # 5) Datasets
 if [[ -d "$SRC/dataset" ]]; then
-  cp -rn "$SRC/dataset/." opelab/examples/gym/dataset/
+  cp -rn "$SRC/dataset/." dataset/
 fi
 
 # ---------- Summary ----------
@@ -145,3 +145,4 @@ echo "[done] gym  models:";      ls -1 opelab/examples/gym/models  || true
 echo "[done] d4rl policy:";      ls -1 opelab/examples/d4rl/policy || true
 echo "[done] gym  policy:";      ls -1 opelab/examples/gym/policy  || true
 echo "[done] diffusion policy:"; ls -1 opelab/examples/diffusion_policy/policy || true
+echo "[done] dataset:";          ls -1 dataset || true
